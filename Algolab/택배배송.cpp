@@ -40,32 +40,75 @@ K-택배 회사는 N개의 도시에 물류창고를 만들어 전국에 물건�
 */
 
 #include <iostream>
+#include <queue>
 using namespace std;
 
+int delivery(int ***cityMap, int A, int B, int maxNum, int city);
+int isRoute(int ***cityMap, int mid, int A, int B, int city);
 int main()  {
     int testC;
 
     cin >> testC;
     while(testC--) {
-        int city, road, A, B, **cityCost;
+        int city, road, A, B, **cityMap, maxNum = -1;
 
         cin >> city >> road >> A >> B;
-        cityCost = new int*[city];
+        cityMap = new int*[city];
+        
+        //create City Map
         for (int i = 0; i < city; i++) {
             int *tmp = new int[city];
-            for (int j = 0; j < city; j++) tmp[j] = -1;
-            cityCost[i] = tmp;
+            for (int j = 0 ; j < city; j++) tmp[j] = -1;
+            cityMap[i] = tmp;
         }
 
-        for (int k = 0; k < road; k++) {
+        //set Cost
+        for (int i = 0; i < road; i++) {
             int O, D, C;
             cin >> O >> D >> C;
 
-            cityCost[O - 1][D - 1] = max(cityCost[O - 1][D - 1], C);
-            cityCost[D - 1][O - 1] = max(cityCost[D - 1][O - 1], C);
-        cout << cityCost[A - 1][B - 1] << endl;
+            cityMap[O - 1][D - 1] = min(C, cityMap[O - 1][D - 1]);
+            cityMap[D - 1][O - 1] = min(C, cityMap[D - 1][O - 1]);
+            maxNum = max(C, maxNum);
         }
 
-        cout << cityCost[A - 1][B - 1] << endl;
+        cout << delivery(&cityMap, A, B, maxNum, city) << endl;
     }
+}
+
+int delivery(int ***cityMap, int A, int B, int end, int city) {
+    int result = -1, start = 0, mid = 0;
+
+    while (mid != start && mid != end) {
+        mid = (start + end) / 2;
+        if (isRoute(cityMap, mid, A, B, city)) start = mid;
+        else end = mid - 1;
+    }
+
+    result = end;
+    return result;
+}
+
+int isRoute(int ***cityMap, int mid, int A, int B, int city) {
+    queue<int> q;
+    int **citymap = *cityMap;
+    int *ckCity = new int[city];
+
+    for (int j = 0; j < city; j++) ckCity[j] = 0;
+
+    q.push(A);
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop();
+        
+        ckCity[node - 1] = 1;
+        if (node == B) return 1;
+        for (int i = 0; i < city; i++) {
+            if (citymap[node - 1][i] > -1) { //방문할 수 있는 노드인 경우
+                if (citymap[node - 1][i] >= mid && ckCity[i] == 0) q.push(i + 1);
+            }
+        }
+    }
+
+    return 0;
 }
