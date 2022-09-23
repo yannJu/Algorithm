@@ -39,70 +39,60 @@ K-택배 회사는 N개의 도시에 물류창고를 만들어 전국에 물건�
 7
 */
 
-/******************************************************************************
-
-                              Online C++ Compiler.
-               Code, Compile, Run and Debug C++ program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <iostream>
 #include <queue>
 #include <vector>
 using namespace std;
 
-int delivery(vector<pair<int, int> > **cityMap, int A, int B, int maxNum, int city);
-int isRoute(vector<pair<int, int> > **cityMap, int mid, int A, int B, int city);
+int delivery(vector<vector<pair<int, int> >>cityMap, int A, int B, int end, int city);
+int isRoute(vector<vector<pair<int, int> >>cityMap, int mid, int A, int B, int city);
 int main()  {
-    int testC;
+    int testC, city, road, A, B, maxNum = -1;
 
     cin >> testC;
     while(testC--) {
-        int city, road, A, B, maxNum = -1; 
-
         cin >> city >> road >> A >> B;
-        vector<pair<int, int>> *cityMap = new vector<pair<int, int>>[city];
+        vector<vector<pair<int, int>>> cityMap;
 
-        //create City Map
+        //create map
         for (int i = 0; i < city; i++) {
             vector<pair<int, int>> tmp;
-            cityMap[i] = tmp;
+            cityMap.push_back(tmp);
         }
 
         //set Cost
         for (int i = 0; i < road; i++) {
-            int O, D, C;
-            cin >> O >> D >> C;
+                int O, D, C;
+                cin >> O >> D >> C;
 
-            cityMap[O - 1].push_back(make_pair(D, C));
-            cityMap[D - 1].push_back(make_pair(O, C));
-            maxNum = max(C, maxNum);
+                cityMap[O - 1].push_back(make_pair(D, C));
+                cityMap[D - 1].push_back(make_pair(O, C));
+                maxNum = max(C, maxNum);
         }
 
-        cout << delivery(&cityMap, A, B, maxNum, city) << endl;
+        cout << delivery(cityMap, A, B, maxNum, city) << endl;
     }
 }
 
-int delivery(vector<pair<int, int> > **cityMap, int A, int B, int end, int city) {
-    int result = -1, start = 0, mid = (start + end) / 2;
+int delivery(vector<vector<pair<int, int> >> cityMap, int A, int B, int end, int city) {
+    int result = -1, start = 0, mid = -1;
 
-    while (mid != start && mid != end) {
-        if (isRoute(cityMap, mid, A, B, city)) start = mid;
-        else end = mid - 1;
+    while (start <= end) {
         mid = (start + end) / 2;
+        if (isRoute(cityMap, mid, A, B, city)) start = mid + 1;
+        else end = mid - 1;
     }
 
-    result = mid;
+    result = end;
     return result;
 }
 
-int isRoute(vector<pair<int, int> > **cityMap, int mid, int A, int B, int city) {
+int isRoute(vector<vector<pair<int, int> >> cityMap, int mid, int A, int B, int city) {
     queue<int> q;
-    vector<pair<int, int>> *citymap = *cityMap;
-    int *ckCity = new int[city];
+    vector<int> ckCity;
 
-    for (int j = 0; j < city; j++) ckCity[j] = 0;
+    for (int j = 0; j < city; j++) ckCity.push_back(0);
+    ckCity[A - 1] = 1;
 
     q.push(A);
     while(!q.empty()) {
@@ -110,10 +100,12 @@ int isRoute(vector<pair<int, int> > **cityMap, int mid, int A, int B, int city) 
         q.pop();
 
         if (node == B) return 1;
-        for (int i = 0; i < citymap[node - 1].size(); i++) {
-            if (citymap[node - 1][i].second >= mid) {
-                if (ckCity[citymap[node - 1][i].first - 1] == 0) q.push(citymap[node - 1][i].first);
-                ckCity[node - 1] = 1;
+        for (int i = 0; i < cityMap[node - 1].size(); i++) {
+            if (cityMap[node - 1][i].second >= mid) {
+                if (ckCity[cityMap[node - 1][i].first - 1] == 0){ 
+                    q.push(cityMap[node - 1][i].first);
+                    ckCity[cityMap[node - 1][i].first - 1] = 1;
+                }
             }
         }
     }
