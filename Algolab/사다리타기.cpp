@@ -121,18 +121,3 @@ int main() {
         cout << nowX / 2 + 1 << endl;
     }
 }
-
-void ladders(vector<int> **MAP, int n, int m, int *result, int x, int y) {
-    vector<int> *map = *MAP;
-
-    if (y == 0) {
-        result[0] = x;
-        return;
-    }
-
-    for (int i = 0; i < 3; i++) {
-        if ((x + dir[i].x > -1 && x + dir[i].x < 2 * n - 1) && (y + dir[i].y > -1 && y + dir[i].y < m)) {
-            if (map[y + dir[i].y][x + dir[i].x] == 1) ladders(&map, n, m, result, x + dir[i].x, y + dir[i].y);
-        }
-    }
-}
