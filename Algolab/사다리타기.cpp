@@ -108,7 +108,13 @@ int main() {
         int nowX = (d - 1) * 2, nowY = m - 1;
         do {
             for (int k = 0; k < 3; k++) {
-                if ((nowY + dir[]) && (nowX + dir[k].x >= 0 && nowX + dir[k].x < 2 * n - 1))
+                if ((nowY + dir[k]. y >= 0 && nowY + dir[k].y < m) && (nowX + dir[k].x >= 0 && nowX + dir[k].x < 2 * n - 1)) {
+                    if (map[nowY + dir[k].y][nowX + dir[k].x] == 1) {
+                        nowX += dir[k].x;
+                        nowY += dir[k].y;
+                        map[nowY][nowX] = -1;
+                    }
+                }
             }
         } while(nowY > 0);
         
