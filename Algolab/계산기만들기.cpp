@@ -22,12 +22,122 @@
 입력 출력
 3
 5
-2 + 2 * 2  
+2 + 2 * 2
+222*+
 7
 ( 2 + 2 ) * 2
+22+2*
 3
 2 - 3
+23-
 6
 8
 -1
 */
+
+//곱셈, 나눗셈, 괄호는 먼저 계산하고 나머지 연산은 스택에 넣기?
+//곱셈, 나눗셈 계산시 스택에서 마지막 숫자를 가져와야함
+
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main() {
+    int testC;
+
+    cin >> testC;
+    while(testC--) {
+        int l;
+        string result = "";
+        char tmp, getOp;
+        stack<char> sOp;
+
+        cin >> l;
+        while(l--) {
+            cin >> tmp;
+            switch (tmp)
+            {
+            case '+':
+                if (!sOp.empty()) {
+                    getOp = sOp.top();
+                    if (getOp == '*') {
+                        while(!sOp.empty()) {
+                            result += sOp.top();
+                            sOp.pop();
+                        }
+                    }
+                }
+                
+                sOp.push('+');
+                break;
+            
+            case '*':
+                sOp.push('*');
+                break;
+
+            case '-':
+                if (!sOp.empty()) {
+                    getOp = sOp.top();
+                    if (getOp == '*') {
+                        while(!sOp.empty()) {
+                            result += sOp.top();
+                            sOp.pop();
+                        }
+                    }
+                }
+                
+                sOp.push('-');
+                break;
+
+            case '(':
+                sOp.push('(');
+                break;
+
+            case ')':
+                do {
+                    if (sOp.top() != '(') result += sOp.top();
+                    sOp.pop();
+                } while(sOp.top() != '(');
+
+                sOp.pop();
+                break;
+
+            default:
+                result += tmp;
+                break;
+            }
+        }
+        while(!sOp.empty()) {
+            result += sOp.top();
+            sOp.pop();
+        }
+
+        //Calculate
+        int nowRe, answer = result[0] - '0';
+        for (int i = 1; i < result.length(); i++) {
+            switch (result[i])
+            {
+            case '+':
+                answer += nowRe;
+                nowRe = answer;
+                break;
+            
+            case '-':
+                answer -= nowRe;
+                nowRe = answer;
+                break;
+
+
+            case '*':
+                answer *= nowRe;
+                nowRe = answer;
+                break;
+
+            default:
+                nowRe = result[i] - '0';
+                break;
+            }
+        }
+        cout << answer << "\n";
+    }
+}
