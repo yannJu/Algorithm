@@ -39,9 +39,19 @@
 1 0 0 0 0
 1 0 0 0 0
 
+0 1 1 1 1 
+0 5 0 4 14
+0 3 3 3 3 
+0 2 2 2 2 
+0 1 1 1 1
+
 13
 11
 */
+
+#include <iostream>
+#include <vector>
+using namespace std;
 
 struct DIR {
     int x;
@@ -49,43 +59,85 @@ struct DIR {
 };
 DIR *dir;
 
-#include <iostream>
-#include <vector>
-using namespace std;
-
 int main() {
     int testC;
 
-    dir[0].x = -1; dir[0].y = -1;
-    dir[1].x = 0; dir[1].y = -1;
-    dir[2].x = 1; dir[2].y = -1;
+    dir = new DIR[3];
+    dir[0].x = -1; dir[0].y = 1;
+    dir[1].x = 0; dir[1].y = 1;
+    dir[2].x = 1; dir[2].y = 1;
 
     cin >> testC;
     while(testC--) {
-        int N, result, *memo;
+        int N, result = -1;
         cin >> N;
-        memo = new int[N];
-
-        for (int i = 0; i < N; i++) memo[i] = 0;
 
         //create Map
-        vector<int> *map = new vector<int>[N];
-        for (int i = 0; i < N; i++) {
+        vector<int> *map = new vector<int>[N + 1], *memo = new vector<int>[N + 1];
+        for (int i = 0; i <= N; i++) {
             int tmp;
-            vector<int> vtmp;
-            for (int j = 0; j < 5; j++) {
-                cin >> tmp;
-                vtmp.push_back(tmp);
+            vector<int> vtmp, ckTmp;
+
+            if (i == N) {
+                for (int j = 0; j < 5; j++) {
+                    vtmp.push_back(0);
+                    ckTmp.push_back(0);
+                }
+            }
+            else {
+                for (int j = 0; j < 5; j++) {
+                    cin >> tmp;
+                    vtmp.push_back(tmp);
+                    ckTmp.push_back(0);
+                }
             }
             map[i] = vtmp;
+            memo[i] = ckTmp;
         }
 
-        int nowX = 2, nowY = N - 1;
+        for (int i = N; i > -1; i--) {
+            if (i == N) {
+                memo[i][2] += map[i][2];
+                continue;
+            }
+            for (int j = 0; j < 5; j++) {
+                int memorize = map[i][j];
+                if (map[i][j] != 1) {
+                    if (j == 0) {
+                        if (i < N - 1) {
+                            if (map[i + 1][j] == 0 && map[i + 1][j + 1] == 0) memo[i][j] = max(memo[i + 1][j] + memorize, memo[i + 1][j + 1] + memorize);
+                            else if (map[i + 1][j] == 0) memo[i][j] = memo[i + 1][j] + memorize;
+                            else if (map[i + 1][j + 1] == 0) memo[i][j] = memo[i + 1][j + 1] + memorize;
+                        }
+                    }
+                    else if (j == 4) {
+                        if (i < N - 1) {
+                            if (map[i + 1][j] == 0 && map[i + 1][j - 1] == 0) memo[i][j] = max(memo[i + 1][j] + memorize, memo[i + 1][j - 1] + memorize);
+                            else if (map[i + 1][j] == 0) memo[i][j] = memo[i + 1][j] + memorize;
+                            else if (map[i + 1][j - 1] == 0) memo[i][j] = memo[i + 1][j - 1] + memorize;
+                        }
+                    }
+                    else {
+                        memo[i][j] = max(memo[i + 1][j - 1] + memorize, memo[i + 1][j] + memorize);
+                        memo[i][j] = max(memo[i][j], memo[i + 1][j + 1] + memorize);
+                    }
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < 3; j++) {
-                
+                    if (j > 0 && j < 4) {
+                        if (map[i][j - 1] == 1 && map[i][j + 1] == 1) memo[i][j] += 2;
+                        else if (map[i][j - 1] == 1 || map[i][j + 1] == 1) memo[i][j] += 1;
+                    }
+                    else if ((j > 0) && (j > 3) && (map[i][j - 1] == 1)) memo[i][j] += 1;
+                    else if ((j <= 0) && (j < 4) && (map[i][j + 1]) == 1) memo[i][j] += 1;
+                }
             }
         }
+
+        for (int i = 0; i < 5; i++) result = max(result, memo[0][i]);
+        cout << result << endl;
+
+        // for (int i = 0; i < N; i++) {
+        //     for (int j = 0; j < 5; j++) cout << memo[i][j] << " ";
+        //     cout << endl;
+        // }
     }
 }
