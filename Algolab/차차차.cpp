@@ -43,5 +43,49 @@
 11
 */
 
+struct DIR {
+    int x;
+    int y;
+};
+DIR *dir;
+
 #include <iostream>
+#include <vector>
 using namespace std;
+
+int main() {
+    int testC;
+
+    dir[0].x = -1; dir[0].y = -1;
+    dir[1].x = 0; dir[1].y = -1;
+    dir[2].x = 1; dir[2].y = -1;
+
+    cin >> testC;
+    while(testC--) {
+        int N, result, *memo;
+        cin >> N;
+        memo = new int[N];
+
+        for (int i = 0; i < N; i++) memo[i] = 0;
+
+        //create Map
+        vector<int> *map = new vector<int>[N];
+        for (int i = 0; i < N; i++) {
+            int tmp;
+            vector<int> vtmp;
+            for (int j = 0; j < 5; j++) {
+                cin >> tmp;
+                vtmp.push_back(tmp);
+            }
+            map[i] = vtmp;
+        }
+
+        int nowX = 2, nowY = N - 1;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < 3; j++) {
+                
+            }
+        }
+    }
+}
