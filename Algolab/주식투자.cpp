@@ -26,6 +26,7 @@
 2 5 10
 6
 3 3 7 9 7 4
+
 0
 13
 14
@@ -39,24 +40,28 @@ int main() {
 
     cin >> testC;
     while(testC--) {
-        int t, *lst, result = 0;
+        int d, *stocks, maxStock, prevResult = 0, result = 0;
 
-        cin >> t;
-        lst = new int[t];
-        for (int i = 0; i < t; i++) {
-            int d;
-            cin >> d;
+        cin >> d;
+        stocks = new int[d];
+        for (int i = 0; i < d; i++) cin >> stocks[i];
+        maxStock = d - 1;
 
-            lst[i] = d;
-        }
+       for (int i =  d - 1; i > 0; i--) {
+            if (stocks[maxStock] < stocks[i - 1]) {
+                if (stocks[i - 1] - stocks[maxStock] > result ) {    
+                    maxStock = i - 1;
+                    prevResult = 0;
+                }
+            }
+            else {
+                prevResult += (stocks[maxStock] - stocks[i - 1]);
+            }
+            result = max(result, prevResult);
+            cout << "Max : " << stocks[maxStock] << " R : " << result << endl;
+       }
 
-        for (int j = 0; j < t; j++) {
-            int tmpResult = 0;
-            for (int k = 0; k <= j; k++) tmpResult += (lst[j] - lst[k]);
-
-            if (tmpResult > 0) result = max(result, tmpResult);
-        }
-
-        cout << result << endl;
+       cout << result << endl;
+       delete stocks;
     }
 }
