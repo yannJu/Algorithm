@@ -40,25 +40,17 @@ int main() {
 
     cin >> testC;
     while(testC--) {
-        int d, *stocks, maxStock, prevResult = 0, result = 0;
+        int d;
+        long long *stocks, maxStock, prevResult = 0, result = 0;
 
         cin >> d;
-        stocks = new int[d];
+        stocks = new long long[d];
         for (int i = 0; i < d; i++) cin >> stocks[i];
         maxStock = d - 1;
 
-       for (int i =  d - 1; i > 0; i--) {
-            if (stocks[maxStock] < stocks[i - 1]) {
-                if (stocks[i - 1] - stocks[maxStock] > result ) {    
-                    maxStock = i - 1;
-                    prevResult = 0;
-                }
-            }
-            else {
-                prevResult += (stocks[maxStock] - stocks[i - 1]);
-            }
-            result = max(result, prevResult);
-            cout << "Max : " << stocks[maxStock] << " R : " << result << endl;
+       for (int i = d - 1; i > -1; i--) {
+        if (stocks[i] > stocks[maxStock]) maxStock = i;
+        else result += (stocks[maxStock] - stocks[i]);
        }
 
        cout << result << endl;

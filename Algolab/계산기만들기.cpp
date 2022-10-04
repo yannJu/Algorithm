@@ -59,12 +59,10 @@ int main() {
             {
             case '+':
                 if (!sOp.empty()) {
-                    getOp = sOp.top();
-                    if (getOp == '*') {
-                        while(!sOp.empty()) {
-                            result += sOp.top();
-                            sOp.pop();
-                        }
+                    while(!sOp.empty()) {
+                        if (sOp.top() == '(') break;
+                        result += sOp.top();
+                        sOp.pop();
                     }
                 }
                 
@@ -77,12 +75,9 @@ int main() {
 
             case '-':
                 if (!sOp.empty()) {
-                    getOp = sOp.top();
-                    if (getOp == '*') {
-                        while(!sOp.empty()) {
-                            result += sOp.top();
-                            sOp.pop();
-                        }
+                    while(!sOp.empty()) {
+                        result += sOp.top();
+                        sOp.pop();
                     }
                 }
                 
@@ -94,11 +89,10 @@ int main() {
                 break;
 
             case ')':
-                do {
-                    if (sOp.top() != '(') result += sOp.top();
+                while(sOp.top() != '(') {
+                    result += sOp.top();
                     sOp.pop();
-                } while(sOp.top() != '(');
-
+                }
                 sOp.pop();
                 break;
 
@@ -112,32 +106,53 @@ int main() {
             sOp.pop();
         }
 
+        // cout << result << endl;
         //Calculate
-        int nowRe, answer = result[0] - '0';
-        for (int i = 1; i < result.length(); i++) {
-            switch (result[i])
-            {
-            case '+':
-                answer += nowRe;
-                nowRe = answer;
-                break;
-            
-            case '-':
-                answer -= nowRe;
-                nowRe = answer;
-                break;
+        stack<int> calcS;
+        int answer = 0;
+        for (int i = 0; i < result.length(); i++) {
+            int first, second;
 
+            switch(result[i]) {
+                cout << result[i] << endl;
+                case '+':
+                    first = calcS.top() - '0';
+                    calcS.pop();
+                    second = calcS.top() - '0';
+                    calcS.pop();
 
-            case '*':
-                answer *= nowRe;
-                nowRe = answer;
-                break;
+                    answer = (first + second);
 
-            default:
-                nowRe = result[i] - '0';
-                break;
+                    calcS.push(answer);
+                    break;
+
+                case '-':
+                    first = calcS.top() - '0';
+                    calcS.pop();
+                    second = calcS.top() - '0';
+                    calcS.pop();
+
+                    answer = (second - first);
+
+                    calcS.push(answer);
+                    break;
+
+                case '*':
+                    first = calcS.top() - '0';
+                    calcS.pop();
+                    second = calcS.top() - '0';
+                    calcS.pop();
+
+                    answer = (first * second);
+
+                    calcS.push(answer);
+                    break;
+
+                default:
+                    calcS.push(result[i] - '0');
+                    break;
             }
         }
-        cout << answer << "\n";
+        cout << calcS.top() << endl;
     }
 }
