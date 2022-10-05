@@ -40,6 +40,8 @@
 
 #include <iostream>
 #include <stack>
+#include <vector>
+#include <string>
 using namespace std;
 
 int main() {
@@ -48,110 +50,88 @@ int main() {
     cin >> testC;
     while(testC--) {
         int l;
-        string result = "";
-        char tmp, getOp;
-        stack<char> sOp;
+        string tmp;
+        stack<string> sOp;
+        vector<string> result;
 
         cin >> l;
         while(l--) {
             cin >> tmp;
-            switch (tmp)
-            {
-            case '+':
+            if (tmp.compare("+") == 0) {
                 if (!sOp.empty()) {
                     while(!sOp.empty()) {
-                        if (sOp.top() == '(') break;
-                        result += sOp.top();
+                        if (sOp.top().compare("(") == 0) break;
+                        result.push_back(sOp.top());
                         sOp.pop();
                     }
                 }
                 
-                sOp.push('+');
-                break;
-            
-            case '*':
-                sOp.push('*');
-                break;
-
-            case '-':
+                sOp.push("+");
+            }
+            else if (tmp.compare("-") == 0) {
                 if (!sOp.empty()) {
                     while(!sOp.empty()) {
-                        result += sOp.top();
+                        if (sOp.top().compare("(") == 0) break;
+                        result.push_back(sOp.top());
                         sOp.pop();
                     }
                 }
                 
-                sOp.push('-');
-                break;
-
-            case '(':
-                sOp.push('(');
-                break;
-
-            case ')':
-                while(sOp.top() != '(') {
-                    result += sOp.top();
+                sOp.push("-");
+            }
+            else if (tmp.compare("*") == 0) sOp.push("*");
+            else if (tmp.compare("(") == 0) sOp.push("(");
+            else if (tmp.compare(")") == 0) {
+                while(sOp.top().compare("(") != 0) {
+                    result.push_back(sOp.top());
                     sOp.pop();
                 }
                 sOp.pop();
-                break;
-
-            default:
-                result += tmp;
-                break;
             }
+            else result.push_back(tmp);
         }
         while(!sOp.empty()) {
-            result += sOp.top();
+            result.push_back(sOp.top());
             sOp.pop();
         }
 
-        // cout << result << endl;
+        // for (int i = 0; i < result.size(); i++) cout << result[i] << " ";
+        // cout << endl;
         //Calculate
-        stack<int> calcS;
-        int answer = 0;
-        for (int i = 0; i < result.length(); i++) {
-            int first, second;
+        stack<long long> calcS;
+        long long answer = 0;
+        for (int i = 0; i < result.size(); i++) {
+            long long first, second;
+            string ckResult = result[i];
 
-            switch(result[i]) {
-                cout << result[i] << endl;
-                case '+':
-                    first = calcS.top() - '0';
-                    calcS.pop();
-                    second = calcS.top() - '0';
-                    calcS.pop();
+            if (ckResult.compare("+") == 0) {
+                first = calcS.top();
+                calcS.pop();
+                second = calcS.top();
+                calcS.pop();
+                answer = first + second;
 
-                    answer = (first + second);
-
-                    calcS.push(answer);
-                    break;
-
-                case '-':
-                    first = calcS.top() - '0';
-                    calcS.pop();
-                    second = calcS.top() - '0';
-                    calcS.pop();
-
-                    answer = (second - first);
-
-                    calcS.push(answer);
-                    break;
-
-                case '*':
-                    first = calcS.top() - '0';
-                    calcS.pop();
-                    second = calcS.top() - '0';
-                    calcS.pop();
-
-                    answer = (first * second);
-
-                    calcS.push(answer);
-                    break;
-
-                default:
-                    calcS.push(result[i] - '0');
-                    break;
+                calcS.push(answer);
             }
+            else if (ckResult.compare("-") == 0) {
+                first = calcS.top();
+                calcS.pop();
+                second = calcS.top();
+                calcS.pop();
+                answer = second - first;
+
+                calcS.push(answer);
+            }
+            else if (ckResult.compare("*") == 0) {
+                first = calcS.top();
+                calcS.pop();
+                second = calcS.top();
+                calcS.pop();
+                answer = first * second;
+
+                calcS.push(answer);
+            }
+            else calcS.push(stoll(ckResult));
         }
         cout << calcS.top() << endl;
     }
