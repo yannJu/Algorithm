@@ -95,8 +95,8 @@ int main() {
             sOp.pop();
         }
 
-        // for (int i = 0; i < result.size(); i++) cout << result[i] << " ";
-        // cout << endl;
+        for (int i = 0; i < result.size(); i++) cout << result[i] << " ";
+        cout << endl;
         //Calculate
         stack<long long> calcS;
         long long answer = 0;
