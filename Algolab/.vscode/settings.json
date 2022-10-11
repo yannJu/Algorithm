@@ -4,6 +4,7 @@
         "chrono": "cpp",
         "random": "cpp",
         "limits": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "algorithm": "cpp"
     }
 }
