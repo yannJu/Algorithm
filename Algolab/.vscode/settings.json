@@ -5,6 +5,7 @@
         "random": "cpp",
         "limits": "cpp",
         "string": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "ostream": "cpp"
     }
 }
