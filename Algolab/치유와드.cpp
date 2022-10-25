@@ -25,7 +25,6 @@ OO게임은 새로운 던전에 몬스터가 없는 정사각 형태의 안전�
 
 입출력 예
 입력 
-
 2
 5 2
 1 1
@@ -44,14 +43,17 @@ OO게임은 새로운 던전에 몬스터가 없는 정사각 형태의 안전�
 -1 0 0 1 1
 -1 0 1 0 0
 0 0 1 0 0
+
 -3 -2 0 2 3
 -2 -4 -2 0 2
 0 -2 -4 -2 0
 2 0 -2 -4 -2
 3 2 0 -2 -3
 */
+
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #define pii pair<int, int>
 using namespace std;
 
@@ -59,91 +61,43 @@ int main() {
     int testC;
 
     cin >> testC;
-    while (testC--) {
-        int n, m, a, b;
-        vector<int> *poison, *heal, *resultMap;
-        vector<pii> poisonAry, healAry;
+    while(testC--) {
+        int n, m, a, b; // n : 안전지대 크기, m : 시간, a : 시체 수, b : 치유와드 수
+        int pMax = -1, cMax = -1;
+        vector<pii> poisonXY, careXY;
+        vector<vector<int> > map;
 
-        cin >> n >> m;
-        //Create Map =====
-        poison = new vector<int>[n];
-        heal = new vector<int>[n];
-        resultMap = new vector<int>[n];
-        
+        cin >> n >> m >> a >> b;
+        // 안전지대 초기화
         for (int i = 0; i < n; i++) {
-            vector<int> tmpP, tmpH, tmpR;
-            for (int j = 0; j < n; j++) {
-                tmpP.push_back(0);
-                tmpH.push_back(0);
-                tmpR.push_back(0);
-            }
-
-            poison[i] = tmpP;
-            heal[i] = tmpH;
-            resultMap[i] = tmpR;
+            vector<int> tmp;
+            for (int j = 0; j < n; j++) tmp.push_back(0);
+            map.push_back(tmp);
         }
-        // Posion & Heal Setting
-        cin >> a >> b;
-
+        
+        // 시체위치 담기
         for (int i = 0; i < a; i++) {
             int pX, pY;
 
             cin >> pY >> pX;
-            poison[pY][pX] = -1;
-            poisonAry.push_back(make_pair(pY, pX));
+            poisonXY.push_back(make_pair(pY, pX));
+            pMax = max({pMax, (n - pY), (n - pX), pY, pX});
         }
+
+        // 치유와드 위치 담기
         for (int j = 0; j < b; j++) {
-            int hX, hY;
+            int cX, cY;
 
-            cin >> hY >> hX;
-            heal[hY][hX] = 1;
-            healAry.push_back(make_pair(hY, hX));
+            cin >> cY >> cX;
+            careXY.push_back(make_pair(cY, cX));
+            cMax = max ({cMax, (n - cX), (n - cY), cX, cY});
         }
 
-        // Calc pass _ Poison
-        for (int p = 0; p < poisonAry.size(); p++) {
-            int nowX, nowY;
+        if (pMax < m) { // 지속시간 보다 안전지대에 다 퍼지는 속도가 빠른경우
+            for (int k = 0; k < poisonXY.size(); k++) {
+                int tmpY = poisonXY[k].first, tmpX = tmpX = poisonXY[k].second;
 
-            nowY = poisonAry[p].first; nowX = poisonAry[p].second;
-            for (int mm = 1; mm <= m; mm++) {
-                for (int i = -mm; i <= mm; i++) {
-                    for (int j = -mm; j < mm; j++) {
-                        if ((nowY + i >= 0 && nowY + i < n) && (nowX + j >= 0 && nowX + j < n)) poison[nowY + i][nowX + j] -= 1;
-                    }
-                }
             }
-        }
-        // Calc pass _ Heal
-        for (int h = 0; h < healAry.size(); h++) {
-            int nowX, nowY;
-
-            nowY = healAry[h].first; nowX = healAry[h].second;
-            for (int mm = 1; mm <= m; mm++) {
-                for (int i = -mm; i <= mm; i++) { 
-                    for (int j = -mm + (i * -1); j < mm - (i * -1); j++) {  
-                        if ((nowY + i >= 0 && nowY + i < n) && (nowX + j >= 0 && nowX + j < n)) heal[nowY + i][nowX + j] += 1;
-                    }
-                }
-            }
-        }
-
-// (y - 2) : x
-// (y - 1) : x - 1 ~ x + 1
-// (y) : x - 2 ~ x + 2
-// y + 1 : x - 1 ~ x + 1
-// y + 2  ; x
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                cout << poison[i][j] << " ";
-            }
-            cout << endl;
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                cout << heal[i][j] << " ";
-            }
-            cout << endl;
         }
     }
 }
