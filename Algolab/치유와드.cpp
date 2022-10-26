@@ -81,7 +81,8 @@ int main() {
 
             cin >> pY >> pX;
             poisonXY.push_back(make_pair(pY, pX));
-            pMax = max({pMax, (n - pY), (n - pX), pY, pX});
+            pMax = max({pMax, (n - pY) + 1, (n - pX) + 1, pY, pX});
+            // pMax = max({pMax, pX, pY, n - pX, n - pY});
         }
 
         // 치유와드 위치 담기
@@ -90,14 +91,39 @@ int main() {
 
             cin >> cY >> cX;
             careXY.push_back(make_pair(cY, cX));
-            cMax = max ({cMax, (n - cX), (n - cY), cX, cY});
+            cMax = max({cMax, ((n - cX) + (n - cY)), ((n - cX) + cY), (cX + (n - cY)), (cX + cY)});
+            // cMax = max({cMax, (cX + cY), (n - cX + cY), (2*n - cX + cY)});
         }
 
-        if (pMax < m) { // 지속시간 보다 안전지대에 다 퍼지는 속도가 빠른경우
-            for (int k = 0; k < poisonXY.size(); k++) {
-                int tmpY = poisonXY[k].first, tmpX = tmpX = poisonXY[k].second;
-
+        if (m > cMax || m > pMax) m = max(cMax, pMax);
+        // cout << "M : " << m << endl;
+        // 시체 setting
+        for (int i = 0; i < poisonXY.size(); i++) {
+            int tmpPX = poisonXY[i].second, tmpPY = poisonXY[i].first;
+            for (int ll = 1; ll <= m; ll++) {
+                for (int j = -ll; j < ll + 1; j++) { // Y
+                    for (int k = -ll; k < ll + 1; k++) { // X
+                        if ((tmpPY + j >= 0 && tmpPY + j < n) && (tmpPX + k >= 0 && tmpPX + k < n)) map[tmpPY + j][tmpPX + k] -= 1;
+                    }
+                }
             }
+        }
+
+        // 치유와드 setting
+        for (int i = 0; i < careXY.size(); i++) {
+            int tmpCX = careXY[i].second, tmpCY = careXY[i].first;
+            for (int ll = 1; ll <= m; ll++) { // minute
+                for (int j = -ll; j < ll + 1; j++) { // Y
+                    for (int k = -ll + abs(j); k < ll - abs(j) + 1; k++) { //X
+                        if ((tmpCY + j >= 0 && tmpCY + j < n) && (tmpCX + k >= 0 && tmpCX + k < n)) map[tmpCY + j][tmpCX + k] += 1;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) cout << map[i][j] << " ";
+            cout << endl;
         }
     }
 }
