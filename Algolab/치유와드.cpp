@@ -95,9 +95,9 @@ int main() {
             // cMax = max({cMax, (cX + cY), (n - cX + cY), (2*n - cX + cY)});
         }
 
-        if (m >= n) m = max(cMax, pMax);
-        cout << "M : " << m << endl;
-        cout << " cmax : " << cMax << " pMax : " << pMax << endl;
+        if (m > cMax || m > pMax) m = max(cMax, pMax);
+        // cout << "M : " << m << endl;
+        // cout << " cmax : " << cMax << " pMax : " << pMax << endl;
         // 시체 setting
         for (int i = 0; i < poisonXY.size(); i++) {
             int tmpPX = poisonXY[i].second, tmpPY = poisonXY[i].first;
@@ -111,16 +111,16 @@ int main() {
         }
 
         // 치유와드 setting
-        // for (int i = 0; i < careXY.size(); i++) {
-        //     int tmpCX = careXY[i].second, tmpCY = careXY[i].first;
-        //     for (int ll = 1; ll <= m; ll++) { // minute
-        //         for (int j = -ll; j < ll + 1; j++) { // Y
-        //             for (int k = -ll + abs(j); k < ll - abs(j) + 1; k++) { //X
-        //                 if ((tmpCY + j >= 0 && tmpCY + j < n) && (tmpCX + k >= 0 && tmpCX + k < n)) map[tmpCY + j][tmpCX + k] += 1;
-        //             }
-        //         }
-        //     }
-        // }
+        for (int i = 0; i < careXY.size(); i++) {
+            int tmpCX = careXY[i].second, tmpCY = careXY[i].first;
+            for (int ll = 1; ll <= m; ll++) { // minute
+                for (int j = -ll; j < ll + 1; j++) { // Y
+                    for (int k = -ll + abs(j); k < ll - abs(j) + 1; k++) { //X
+                        if ((tmpCY + j >= 0 && tmpCY + j < n) && (tmpCX + k >= 0 && tmpCX + k < n)) map[tmpCY + j][tmpCX + k] += 1;
+                    }
+                }
+            }
+        }
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) cout << map[i][j] << " ";
