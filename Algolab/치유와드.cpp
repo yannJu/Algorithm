@@ -64,6 +64,7 @@ int main() {
     while(testC--) {
         int n, m, a, b; // n : 안전지대 크기, m : 시간, a : 시체 수, b : 치유와드 수
         int pMax = -1, cMax = -1;
+        int mm, pcFlag = 1;
         vector<pii> poisonXY, careXY;
         vector<vector<int> > map;
 
@@ -95,57 +96,37 @@ int main() {
             // cMax = max({cMax, (cX + cY), (n - cX + cY), (2*n - cX + cY)});
         }
 
-        if (m > cMax && m > pMax) m = max(cMax, pMax);
+        mm = m;
+        if (m > cMax && m > pMax) mm = max(cMax, pMax);
         // cout << "M : " << m << endl;
         // cout << " cmax : " << cMax << " pMax : " << pMax << endl;
         // 시체 setting
-        for (int l = 0; l < poisonXY.size(); l++) {
-            int tmpPX = poisonXY[l].second, tmpPY = poisonXY[l].first;
-            // for (int ll = 1; ll <= m; ll++) {
-            //     for (int j = -1 * ll; j < ll + 1; j++) { // Y
-            //         for (int k = -1 * ll; k < ll + 1; k++) { // X
-            //             if ((tmpPY + j >= 0 && tmpPY + j < n) && (tmpPX + k >= 0 && tmpPX + k < n)) map[tmpPY + j][tmpPX + k] -= 1;
-            //         }
-            //     }
-            // }
-            for(int k = 1; k <= m; k++){
-            int start_r = tmpPY-k;
-            int start_c = tmpPX-k;
-            for(int i = start_r; i < start_r + (2*k+1); i++){
-                for(int j = start_c; j < start_c + (2*k+1); j++){
-                if(i >= 0 && i < n && j >=0 && j < n){
-                    map[i][j] -= 1;
+        for (int i = 0; i < poisonXY.size(); i++) {
+            int tmpPX = poisonXY[i].second, tmpPY = poisonXY[i].first;
+            for (int ll = 1; ll <= mm; ll++) {
+                for (int j = -1 * ll; j < ll + 1; j++) { // Y
+                    for (int k = -1 * ll; k < ll + 1; k++) { // X
+                        if ((tmpPY + j >= 0 && tmpPY + j < n) && (tmpPX + k >= 0 && tmpPX + k < n)) map[tmpPY + j][tmpPX + k] -= 1;
+                    }
                 }
-                }
-            }
             }
         }
 
         // 치유와드 setting
-        for (int l = 0; l < careXY.size(); l++) {
-            int tmpCX = careXY[l].second, tmpCY = careXY[l].first;
-            // for (int ll = 1; ll <= m; ll++) { // minute
-            //     for (int j = -1 * ll; j < ll + 1; j++) { // Y
-            //         for (int k = -1 * ll + abs(j); k < ll - abs(j) + 1; k++) { //X
-            //             if ((tmpCY + j >= 0 && tmpCY + j < n) && (tmpCX + k >= 0 && tmpCX + k < n)) map[tmpCY + j][tmpCX + k] += 1;
-            //         }
-            //     }
-            // }
-            for(int k = 1; k <= m; k++){
-            int start_r = tmpCY-k;
-            int start_c = tmpCX-k;
-            for(int i = start_r; i < start_r + (2*k+1); i++){
-                for(int j = start_c; j < start_c + (2*k+1); j++){
-                if(i >= 0 && i < n && j >=0 && j < n){
-                    map[i][j] -= 1;
+        for (int i = 0; i < careXY.size(); i++) {
+            int tmpCX = careXY[i].second, tmpCY = careXY[i].first;
+            for (int ll = 1; ll <= mm; ll++) { // minute
+                for (int j = -1 * ll; j < ll + 1; j++) { // Y
+                    for (int k = -1 * ll + abs(j); k < ll - abs(j) + 1; k++) { //X
+                        if ((tmpCY + j >= 0 && tmpCY + j < n) && (tmpCX + k >= 0 && tmpCX + k < n)) map[tmpCY + j][tmpCX + k] += 1;
+                    }
                 }
-                }
-            }
             }
         }
 
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) cout << map[i][j] << " ";
+            //a == poison , b = heal  b - a
+            for (int j = 0; j < n; j++) cout << map[i][j] + ((m - mm) * (b - a)) << " ";
             cout << endl;
         }
     }

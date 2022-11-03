@@ -51,49 +51,32 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#define pii pair<int, int>
 using namespace std;
 
-int calc(int a);
 int main() {
     int testC;
 
     cin >> testC;
     while(testC--) {
         int n, result = 0;
-        vector<pair<int, int> > v;
-
+        vector<pii> v(100, make_pair(0, 0)); //first : 배열크기, second : 원소수
+        
         cin >> n;
-        for (int i = 0; i < 100; i++) v.push_back(make_pair(0, 0)); // 원소 갯수(first), arySize(second)
         for (int i = 0; i < n; i++) {
-            int a, c;
+            int a, b;
+            cin >> a >> b;
 
-            cin >> a >> c;
-            if (v[a - 1].second == 0) {
-                v[a - 1].first = c;
-                v[a - 1].second = pow(2, calc(c));
-            }
-            else if (v[a - 1].first + c > v[a - 1].second) {
-                result += v[a - 1].first;
-                v[a - 1].second = pow(2, calc(v[a - 1].first + c));
-                v[a - 1].first = v[a - 1].first + c;
-            }
-            else v[a - 1].first += c;
+            if (v[a - 1].first < v[a - 1].second + b) {
+                int nextSz = log2(v[a - 1].second + b) + 1;
+                nextSz = pow(2, nextSz);
 
-            // cout << " A : " << a << " C :  " << c << " Ary Num : " << v[a - 1].first << " Ary Size : " << v[a - 1].second << endl;
-            // cout << "Result : "<<  result << endl; 
+                result += v[a - 1].second;
+                v[a - 1].first = nextSz; 
+            }
+            v[a - 1].second += b;
         }
+
         cout << result << endl;
     }
-}
-
-int calc(int a) {
-    int cnt = 0, answer = 1;
-    
-    while (answer < a) {
-        answer *= 2;
-        cnt += 1;
-    }
-
-    if (cnt == 0) cnt = 1;
-    return cnt;
 }
