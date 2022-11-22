@@ -95,16 +95,9 @@ int main() {
             // cMax = max({cMax, (cX + cY), (n - cX + cY), (2*n - cX + cY)});
         }
 
-<<<<<<< HEAD
         if (m > cMax || m > pMax) m = max(cMax, pMax);
         cout << "M : " << m << endl;
         cout << " cmax : " << cMax << " pMax : " << pMax << endl;
-=======
-        mm = m;
-        if (m > cMax && m > pMax) mm = max(cMax, pMax);
-        // cout << "M : " << m << endl;
-        // cout << " cmax : " << cMax << " pMax : " << pMax << endl;
->>>>>>> f7dc6a3b99a8d80be9d9daf7a228196ae61b0730
         // 시체 setting
         for (int i = 0; i < poisonXY.size(); i++) {
             int tmpPX = poisonXY[i].second, tmpPY = poisonXY[i].first;
