@@ -126,7 +126,7 @@ int main() {
                     if (map[pii.first][pii.second + i] == 'X') break;
                     if (map[pii.first - 1][pii.second + i] != '.') break;
                     
-                    if (i == 3) {
+                    if (i == 3 && map[pii.first][pii.second + i] == 'H') {
                         result[pii.first][pii.second + i] = min(result[pii.first][pii.second + i], result[pii.first][pii.second] + 1);
                         if (ck[pii.first][pii.second + i] == 0) q.push(make_pair(pii.first, pii.second + i));
                     }
@@ -134,6 +134,7 @@ int main() {
                         if (map[pii.first][pii.second + i] == 'H') {
                             result[pii.first][pii.second + i] = min(result[pii.first][pii.second + i], result[pii.first][pii.second] + 1);
                             if (ck[pii.first][pii.second + i] == 0) q.push(make_pair(pii.first, pii.second + i));
+                            break;
                         }
                         else {
                             if (map[pii.first][pii.second + i] != '.') break;
@@ -150,7 +151,7 @@ int main() {
                     if (map[pii.first][pii.second - i] == 'X') break;
                     if (map[pii.first - 1][pii.second - i] != '.') break;
                     
-                    if (i == 3) {
+                    if (i == 3 && map[pii.first][pii.second - i] == 'H') {
                         result[pii.first][pii.second - i] = min(result[pii.first][pii.second - i], result[pii.first][pii.second] + 1);
                         if (ck[pii.first][pii.second - i] == 0) q.push(make_pair(pii.first, pii.second - i));
                     }
@@ -158,6 +159,7 @@ int main() {
                         if (map[pii.first][pii.second - i] == 'H') {
                             result[pii.first][pii.second - i] = min(result[pii.first][pii.second - i], result[pii.first][pii.second] + 1);
                             if (ck[pii.first][pii.second - i] == 0) q.push(make_pair(pii.first, pii.second - i));
+                            break;
                         }
                         else {
                             if (map[pii.first][pii.second - i] != '.') break;
