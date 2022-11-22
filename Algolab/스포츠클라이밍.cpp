@@ -76,8 +76,8 @@ int main() {
     int testC;
     vector<vector<int> > dir(4, vector<int>(2, 0));
     dir[0][0] = -1; dir[0][1] = 0; // up
-    dir[1][0] = 1; dir[1][1] = 0; // down
     dir[2][0] = 0; dir[2][1] = -1; // left
+    dir[1][0] = 1; dir[1][1] = 0; // down
     dir[3][0] = 0; dir[3][1] = 1; // right
 
     cin >> testC;
@@ -119,9 +119,13 @@ int main() {
                         if (ck[pii.first - 2][pii.second] == 0) q.push(make_pair(pii.first - 2, pii.second));
                     }
                 }
+
+                // 2번 규칙 (우)
                 for (int i = 0; i <= 3; i++) {
-                    if (pii.second + i > n && pii.first - 1 < 0 && map[pii.first][pii.second + i] == 'X') break;
+                    if (pii.second + i > n || pii.first - 1 < 0) break;
+                    if (map[pii.first][pii.second + i] == 'X') break;
                     if (map[pii.first - 1][pii.second + i] != '.') break;
+                    
                     if (i == 3) {
                         result[pii.first][pii.second + i] = min(result[pii.first][pii.second + i], result[pii.first][pii.second] + 1);
                         if (ck[pii.first][pii.second + i] == 0) q.push(make_pair(pii.first, pii.second + i));
@@ -137,6 +141,30 @@ int main() {
                     }
                     else if (i == 1) {
                         if (map[pii.first][pii.second + i] != '.') break;
+                    }
+                }
+
+                // 2번 규칙 (좌)
+                for (int i = 0; i <= 3; i++) {
+                    if (pii.second - i < 0 || pii.first - 1 < 0) break;
+                    if (map[pii.first][pii.second - i] == 'X') break;
+                    if (map[pii.first - 1][pii.second - i] != '.') break;
+                    
+                    if (i == 3) {
+                        result[pii.first][pii.second - i] = min(result[pii.first][pii.second - i], result[pii.first][pii.second] + 1);
+                        if (ck[pii.first][pii.second - i] == 0) q.push(make_pair(pii.first, pii.second - i));
+                    }
+                    else if (i == 2) {
+                        if (map[pii.first][pii.second - i] == 'H') {
+                            result[pii.first][pii.second - i] = min(result[pii.first][pii.second - i], result[pii.first][pii.second] + 1);
+                            if (ck[pii.first][pii.second - i] == 0) q.push(make_pair(pii.first, pii.second - i));
+                        }
+                        else {
+                            if (map[pii.first][pii.second - i] != '.') break;
+                        }
+                    }
+                    else if (i == 1) {
+                        if (map[pii.first][pii.second - i] != '.') break;
                     }
                 }
             }
@@ -158,7 +186,6 @@ int main() {
                     }
                 }
             }
-            cout << pii.first << " " << pii.second << endl;
         }
 
         for (int i = 0; i < n; i++) {
