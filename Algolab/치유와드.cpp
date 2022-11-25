@@ -76,14 +76,13 @@ int main() {
             map.push_back(tmp);
         }
         
-        // 시체위치 담기
+        // 시체위치 담기 + setting
         for (int i = 0; i < a; i++) {
             int pX, pY;
 
             cin >> pY >> pX;
             poisonXY.push_back(make_pair(pY, pX));
-            pMax = max({pMax, (n - pY) + 1, (n - pX) + 1, pY, pX});
-            // pMax = max({pMax, pX, pY, n - pX, n - pY});
+            pMax = max({pMax, (n - pY), (n - pX), pY, pX});\
         }
 
         // 치유와드 위치 담기
@@ -96,10 +95,9 @@ int main() {
             // cMax = max({cMax, (cX + cY), (n - cX + cY), (2*n - cX + cY)});
         }
 
-        mm = m;
-        if (m > cMax && m > pMax) mm = max(cMax, pMax);
-        // cout << "M : " << m << endl;
-        // cout << " cmax : " << cMax << " pMax : " << pMax << endl;
+        if (m > cMax || m > pMax) m = max(cMax, pMax);
+        cout << "M : " << m << endl;
+        cout << " cmax : " << cMax << " pMax : " << pMax << endl;
         // 시체 setting
         for (int i = 0; i < poisonXY.size(); i++) {
             int tmpPX = poisonXY[i].second, tmpPY = poisonXY[i].first;
