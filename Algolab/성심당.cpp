@@ -107,7 +107,7 @@ int main() {
             }
             for (int i = 0; i < markets.size(); i++) {
                 if (peoples[i].first == markets[i].first && peoples[i].second == markets[i].second) {
-                    tmp.push_back(make_pair(peoples[i].first, peoples[i].second));
+                    tmp.push_back(peoples[i]);
                     people += 1;
                     peoples[i].first = -2; peoples[i].second = -2;
                 }
@@ -115,6 +115,8 @@ int main() {
                     if (peoples[i].first == -1) {
                         pair<int, int> XY = findH(map, markets[i]);
                         peoples[i] = XY;
+                        map[XY.first][XY.second] = -1;
+                        cout << " I : " << i << " Y : " << XY.first << " X : " << XY.second << endl;
                     }
                     else {
                         int prevL = INT_MAX;
@@ -122,21 +124,22 @@ int main() {
                             int nextY = DIR[j][0] + peoples[i].first, nextX = DIR[j][1] + peoples[i].second;
 
                             if ((nextY >= 0 && nextY < map.size()) && (nextX >= 0 && nextX < map.size())) {
-                                if (abs(markets[i].first - nextY) + abs(markets[i].second - nextX) < prevL) {
+                                if ((abs(markets[i].first - nextY) + abs(markets[i].second - nextX)) < prevL) {
                                     peoples[i].first = nextY;
                                     peoples[i].second = nextX;
                                 }
-                                else if (abs(markets[i].first - nextY) + abs(markets[i].second - nextX) == prevL) {
+                                else if ((abs(markets[i].first - nextY) + abs(markets[i].second - nextX)) == prevL) {
                                     if (nextY < peoples[i].first || (nextY == peoples[i].first && nextX < peoples[i].second)) {
                                         peoples[i].first = nextY;
                                         peoples[i].second = nextX;
                                     }
                                 }
+                                prevL = min(prevL, (abs(markets[i].first - nextY) + abs(markets[i].second - nextX)));
                             }
                         }
                     }
                 }
-                cout << " Time : " << time << " Y : " << peoples[i].first << " X : " << peoples[i].second << endl;
+                // cout << " I : " << i << " Y : " << peoples[i].first << " X : " << peoples[i].second << endl;
                 if (time > 100) break;
             } 
             for (int j = 0; j < tmp.size(); j++) map[tmp[j].first][tmp[j].second] = -1;
@@ -151,6 +154,7 @@ pair<int, int> findH(vii map, pair<int, int> market) {
     queue<pair<int, int>> q;
     pair<int, int> result = make_pair(-1, -1);
     vii Ck(map.size(), vector<int>(map.size(), INT_MAX));
+    int ckCnt = 0;
 
     q.push(market);
     Ck[market.first][market.second] = 0;
@@ -164,7 +168,8 @@ pair<int, int> findH(vii map, pair<int, int> market) {
 
             if ((nextY >= 0 && nextY < map.size()) && (nextX >= 0 && nextX < map.size())) {
                 if (map[nextY][nextX] == 1) {
-                    if (result.first == -1 || result.first > nextY || (result.first == nextY && result.second > nextX)) {
+                    if (result.first == -1 || ckCnt < Ck[nextY][nextX]) {
+                        if (result.first > nextY || (result.first == nextY && result.second > nextX)) 
                         result.first = nextY;
                         result.second = nextX;
                     }
