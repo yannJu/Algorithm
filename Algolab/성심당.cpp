@@ -96,9 +96,9 @@ int main() {
         int time = 0;
         while (m > people) {
             vector<pair<int, int> > tmp;
-            cout << time << endl;
+            time  += 1;
             // Create Markets XY
-            if (time < m) {
+            if (time <= m) {
                 int y, x;
                 cin >> y >> x;
 
@@ -106,44 +106,42 @@ int main() {
                 markets.push_back(make_pair(y, x));
             }
             for (int i = 0; i < markets.size(); i++) {
-                if (peoples[i].first == markets[i].first && peoples[i].second == markets[i].second) {
-                    tmp.push_back(peoples[i]);
-                    people += 1;
-                    peoples[i].first = -2; peoples[i].second = -2;
-                }
-                else if (peoples[i].first > -2) {
-                    if (peoples[i].first == -1) {
+                if (peoples[i].first > -2) {
+                    if (peoples[i].first == -1 || ) {
                         pair<int, int> XY = findH(map, markets[i]);
                         peoples[i] = XY;
                         map[XY.first][XY.second] = -1;
-                        cout << " I : " << i << " Y : " << XY.first << " X : " << XY.second << endl;
                     }
                     else {
                         int prevL = INT_MAX;
+                        int setY = peoples[i].first, setX = peoples[i].second;
                         for (int j = 0; j < 4; j++) {
                             int nextY = DIR[j][0] + peoples[i].first, nextX = DIR[j][1] + peoples[i].second;
 
                             if ((nextY >= 0 && nextY < map.size()) && (nextX >= 0 && nextX < map.size())) {
                                 if ((abs(markets[i].first - nextY) + abs(markets[i].second - nextX)) < prevL) {
-                                    peoples[i].first = nextY;
-                                    peoples[i].second = nextX;
+                                    setY = nextY;
+                                    setX = nextX;
                                 }
                                 else if ((abs(markets[i].first - nextY) + abs(markets[i].second - nextX)) == prevL) {
                                     if (nextY < peoples[i].first || (nextY == peoples[i].first && nextX < peoples[i].second)) {
-                                        peoples[i].first = nextY;
-                                        peoples[i].second = nextX;
+                                        setY = nextY;
+                                        setX = nextX;
                                     }
                                 }
                                 prevL = min(prevL, (abs(markets[i].first - nextY) + abs(markets[i].second - nextX)));
                             }
                         }
+                        peoples[i].first = setY; peoples[i].second = setX;
                     }
                 }
-                // cout << " I : " << i << " Y : " << peoples[i].first << " X : " << peoples[i].second << endl;
-                if (time > 100) break;
+                if (peoples[i].first == markets[i].first && peoples[i].second == markets[i].second) {
+                    tmp.push_back(peoples[i]);
+                    people += 1;
+                    peoples[i].first = -2; peoples[i].second = -2;
+                }
             } 
             for (int j = 0; j < tmp.size(); j++) map[tmp[j].first][tmp[j].second] = -1;
-            time += 1;
         }
 
         cout << time << endl;
@@ -168,8 +166,7 @@ pair<int, int> findH(vii map, pair<int, int> market) {
 
             if ((nextY >= 0 && nextY < map.size()) && (nextX >= 0 && nextX < map.size())) {
                 if (map[nextY][nextX] == 1) {
-                    if (result.first == -1 || ckCnt < Ck[nextY][nextX]) {
-                        if (result.first > nextY || (result.first == nextY && result.second > nextX)) 
+                    if (result.first == -1 || (ckCnt >= Ck[nextY][nextX] && (result.first > nextY || (result.first == nextY && result.second > nextX)))) {
                         result.first = nextY;
                         result.second = nextX;
                     }
