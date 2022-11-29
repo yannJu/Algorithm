@@ -46,7 +46,7 @@ int main() {
     DIR[3][0] = 0; DIR[3][1] = 1; // Right
     while(testC--) {
         int n, m, allApple = 0, result = 0;
-        queue<vector<int> > q;
+        queue<pair<int, int> > q;
 
         cin >> n >> m;
         vii map(n, vector<int>(m, 0)), ck(n, vector<int>(m, INT_MAX));
@@ -60,34 +60,34 @@ int main() {
                 map[i][j] = tmp;
 
                 if (tmp == 1) {
-                    vector<int> v(3, 0);
-                    v[0] = i; v[1] = j; v[2] = 0;
-                    q.push(v); 
+                    q.push(make_pair(i, j)); 
                     ck[i][j] = 0;
                 }
                 else if (tmp == 0) allApple += 1;
             }
         }
 
-        while(!q.empty()) {
-            vector<int> now = q.front();
+        while(!q.empty() && allApple > 0) {
+            pair<int, int> now = q.front();
             q.pop();
-            result = now[2];
 
             for (int i = 0; i < 4; i++) {
-                int nextY = DIR[i][0] + now[0], nextX = DIR[i][1] + now[1];
+                int nextY = DIR[i][0] + now.first, nextX = DIR[i][1] + now.second;
                 if ((nextY >= 0 && nextY < n) && (nextX >= 0 && nextX < m)) {
                     if (map[nextY][nextX] == 0 && ck[nextY][nextX] == INT_MAX) {
-                        vector<int> next(3, 0);
-                        ck[nextY][nextX] = min(ck[nextY][nextX], ck[now[0]][now[1]] + 1);
-                        next[0] = nextY; next[1] = nextX; next[2] = now[2] + 1;
-                        q.push(next);
+                        ck[nextY][nextX] = min(ck[nextY][nextX], ck[now.first][now.second] + 1);
+                        result = max(result, ck[nextY][nextX]);
+                        q.push(make_pair(nextY, nextX));
                         allApple -= 1;
                     }
                 }
             }
         }
 
+        // for (int i = 0; i < n ; i++) {
+        //     for (int j = 0; j < m; j++) cout << ck[i][j] << " ";
+        //     cout << endl;
+        // }
         if (allApple > 0) result = -1;
         cout << result << endl;
     }
