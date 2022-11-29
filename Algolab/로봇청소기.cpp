@@ -45,6 +45,7 @@
 using namespace std;
 
 vii DIR(4, vector<int>(3, 0));
+void bfs(vii MAP, vii* CK, int* result, int nowY, int nowX, int dir);
 int main() {
     int testC;
 
@@ -73,11 +74,12 @@ void bfs(vii MAP, vii* CK, int* result, int nowY, int nowX, int dir) {
     vii ck = *CK;
     int ckAble = 0;
     
+    // cout << nowY << " " << nowX << endl;
     result[0] += 1;
     ck[nowY][nowX] = 1; // 1. 청소한다.
 
-    int nowDir = dir;
-    for (int i = 0; i < 4; i++) {
+    int nowDir = dir, i = 0;
+    for (i; i < 4; i++) {
         int nextDir = DIR[nowDir][2], nextY = nowY + DIR[nextDir][0], nextX = nowX + DIR[nextDir][1]; // 왼쪽으로 회전한 좌표값이 청소할 수 있는지 확인
 
         if ((nextY >= 0 && nextY < MAP.size()) && (nextX >= 0 && nextX < MAP.size())) {
@@ -87,18 +89,22 @@ void bfs(vii MAP, vii* CK, int* result, int nowY, int nowX, int dir) {
             }
             else if ((MAP[nextY][nextX] == 0 && ck[nextY][nextX] == 1) || (MAP[nextY][nextX] == 1)) { // 빈공간이면서 청소가 이미 된 경우 혹은 벽인경우 
                 nowDir = nextDir;
-                ckAble += 1;
             }
         }
     }
 
+
     // 네 방향을 다 확인했으며, 청소를 할 수 없는 경우
-    if (ckAble == 4) {
+    if (i == 4) {
         // 후진이 불가능한 경우
         int tmpY = nowY + (DIR[dir][0] * -1), tmpX = nowX + (DIR[dir][1] * -1);
+                cout << "now : " << nowY << " " << nowX << " tmp : " << tmpY <<" " << tmpX << endl;    
 
         if ((tmpY >= 0 && tmpY < MAP.size()) && (tmpX >= 0 && tmpX < MAP.size())) {
-            if (MAP[tmpY][tmpX] == 1) return;
+            if (MAP[tmpY][tmpX] == 0) {
+                bfs(MAP, &ck, result, tmpY, tmpX, dir);
+            }
+            else return;
         }
         else return;
     }
