@@ -13,6 +13,7 @@
         "bitset": "cpp",
         "initializer_list": "cpp",
         "utility": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "vector": "cpp"
     }
 }
