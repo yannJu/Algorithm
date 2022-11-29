@@ -28,59 +28,57 @@
 using namespace std;
 
 bool compare(vector<int> a, vector<int> b) {
-    if (a[1] < b[1]) return true;
+    if (a[1] > b[1]) return true;
     else if (a[1] == b[1]) {
-        if (a[2] < b[2]) return true;
+        if (a[2] > b[2] ) return true;
         else return false;
     }
     else return false;
 }
 
+int isFind(vector<vector<int> > masterpieces, int recommned);
 int main() {
     int testC;
 
     cin >> testC;
     while(testC--) {
-        int n, m; // 작품수, 추천 갯수
+        int n, m, order = 1;
+        vector<vector<int> > masterpieces;
 
         cin >> n >> m;
-        vector<vector<int> > masterpieces, leave;
-
         for (int i = 0; i < m; i++) {
-            int tmp;
-            vector<int> tmpV;
+            int recommend;
 
-            cin >> tmp;
-            tmpV.push_back(tmp); tmpV.push_back(1); tmpV.push_back(i);
-            if (masterpieces.size() < n) {
-                masterpieces.push_back(tmpV);
-            }
+            cin >> recommend;
+
+            int idx = isFind(masterpieces, recommend);
+            if (idx >= 0) masterpieces[idx][1] += 1;
             else {
-                int isIn = 0;
-                for (int j = 0; j < n; j++) {
-                    if (masterpieces[j][0] == tmp) {
-                        masterpieces[j][1] += 1;
-                        isIn = 1;
-                        break;
-                    }
+                if (masterpieces.size() < n) {
+                    vector<int> tmpV(3, 0);
+                    tmpV[0] = recommend; tmpV[1] = 1; tmpV[2] = order++;
+
+                    masterpieces.push_back(tmpV);
                 }
-                if (isIn == 0) {
-                    leave.push_back(masterpieces[0]);
-                    masterpieces.erase(masterpieces.begin());
-                    for (int k = 0; k < leave.size(); k++) {
-                        if (leave[k][0] == tmp) {
-                            masterpieces.push_back(leave[k]);
-                            leave.erase(leave.begin() + k);
-                        }
-                    }
-                    if (masterpieces.size() < n) masterpieces.push_back(tmpV);
+                else {
+                    masterpieces[n - 1][0] = recommend;
+                    masterpieces[n - 1][1] = 1;
+                    masterpieces[n - 1][2] = order++; 
                 }
             }
 
-            sort(masterpieces.begin(), masterpieces.end(), compare);
+        sort(masterpieces.begin(), masterpieces.end(), compare);
         }
         sort(masterpieces.begin(), masterpieces.end());
         for (int i = 0; i < masterpieces.size(); i++) cout << masterpieces[i][0] << " ";
         cout << endl;
     }
+}
+
+int isFind(vector<vector<int> > masterpieces, int recommned) {
+    for (int i = 0; i < masterpieces.size(); i++) {
+        if (masterpieces[i][0] == recommned) return i;
+    }
+
+    return -1;
 }
