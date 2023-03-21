@@ -25,3 +25,6 @@
 **ING**
 * 실패율 **(c++)**
 
+---
+#### 23년도 이후 `velog` 로 옮김
+→ [https://velog.io/@yannju](https://velog.io/@yannju)
